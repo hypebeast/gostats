@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"log"
 	"net/http"
 	"os"
@@ -9,8 +11,9 @@ import (
 )
 
 var (
-	Info  *log.Logger
-	Error *log.Logger
+	Info    *log.Logger
+	Error   *log.Logger
+	Periods []string
 )
 
 type GoDocPackage struct {
@@ -22,10 +25,12 @@ type GoDocPackages struct {
 }
 
 type GitHubTrendingRepo struct {
-	Name  string
-	Url   string
-	Stars int
-	Date  time.Time
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Url         string `json:"url"`
+	Stars       string `json:"stars"`
+	Date        int    `json:"date"`
+	Since       string `json:"since"`
 }
 
 type GitHubTotalStarsRepo struct {
@@ -37,6 +42,7 @@ type GitHubTotalStarsRepo struct {
 func init() {
 	Info = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime)
 	Error = log.New(os.Stdout, "ERROR: ", log.Ldate|log.Ltime)
+	Periods = append(Periods, "daily", "weekly", "monthly")
 }
 
 func scrapeGoDocPackages() {
@@ -79,6 +85,7 @@ func scrapeGoDocPackages() {
 	outData, err := json.Marshal(data)
 	if err != nil {
 		Error.Println(err)
+		return
 	}
 
 	_, err = f.Write(outData)
@@ -104,17 +111,85 @@ func createFile(filename string) error {
 	return nil
 }
 
-func scrapeGithubTrendingRepos() {
-	// Get trending Go repositories from Gtihub
-	// Get it for today, week and month
-	// Get once per day
-	// Data: Name, Link, Stars and total stars
-	// Save all data in a JSON file on a daily base
+func scrapeGithubTrendingRepos(language string) {
+	var doc *goquery.Document
+	var err error
+
+	filename := dateFilename("github_trending_repos", ".json")
+	err = createFile(filename)
+	if err != nil {
+		Error.Println(err)
+		return
+	}
+
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
+	defer f.Close()
+	if err != nil {
+		Error.Println(err)
+		return
+	}
+
+	for _, period := range Periods {
+		if doc, err = goquery.NewDocument(fmt.Sprintf("https://github.com/trending?l=%s&since=%s", language, period)); err != nil {
+			Error.Println(err)
+		}
+
+		repos := getRepos(doc, period)
+		err = writeRepos(f, repos)
+		if err != nil {
+			Error.Println(err)
+			return
+		}
+	}
+}
+
+func getRepos(doc *goquery.Document, since string) []GitHubTrendingRepo {
+	var repos []GitHubTrendingRepo
+
+	doc.Find("li.repo-leaderboard-list-item").Each(func(i int, s *goquery.Selection) {
+		title := s.Find("div h2 a").Text()
+		description := s.Find(".repo-leaderboard-description").Text()
+		url, _ := s.Find("div h2 a").Attr("href")
+		url = "https://github.com" + url
+		stars := s.Find("span.collection-stat").Text()
+
+		repo := GitHubTrendingRepo{
+			Title:       title,
+			Description: description,
+			Url:         url,
+			Stars:       stars,
+			Date:        int(time.Now().Unix()),
+			Since:       since,
+		}
+
+		repos = append(repos, repo)
+	})
+	return repos
+}
+
+func writeRepos(file *os.File, repos []GitHubTrendingRepo) error {
+	for _, repo := range repos {
+		outData, err := json.Marshal(repo)
+		if err != nil {
+			return err
+		}
+		outData = append(outData, '\n')
+
+		_, err = file.Write(outData)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func main() {
 	Info.Println("Getting packages from GoDoc...")
 	scrapeGoDocPackages()
+
+	Info.Println("Getting trending repos from GtiHub...")
+	scrapeGithubTrendingRepos("go")
 
 	Info.Println("Done")
 }

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -43,6 +44,22 @@ func init() {
 	Info = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime)
 	Error = log.New(os.Stdout, "ERROR: ", log.Ldate|log.Ltime)
 	Periods = append(Periods, "daily", "weekly", "monthly")
+}
+
+func dateFilename(prefix string, extension string) string {
+	dateString := time.Now().Format("2006-01-02-15")
+	return prefix + "-" + dateString + extension
+}
+
+func createFile(filename string) error {
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	if err = f.Close(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func scrapeGoDocPackages() {
@@ -95,22 +112,6 @@ func scrapeGoDocPackages() {
 	}
 }
 
-func dateFilename(prefix string, extension string) string {
-	dateString := time.Now().Format("2006-01-02-15")
-	return prefix + "-" + dateString + extension
-}
-
-func createFile(filename string) error {
-	f, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	if err = f.Close(); err != nil {
-		return err
-	}
-	return nil
-}
-
 func scrapeGithubTrendingRepos(language string) {
 	var doc *goquery.Document
 	var err error
@@ -151,7 +152,8 @@ func getRepos(doc *goquery.Document, since string) []GitHubTrendingRepo {
 		description := s.Find(".repo-leaderboard-description").Text()
 		url, _ := s.Find("div h2 a").Attr("href")
 		url = "https://github.com" + url
-		stars := s.Find("span.collection-stat").Text()
+		stars := s.Find("span.collection-stat").First().Text()
+		stars = strings.Replace(stars, ",", "", -1)
 
 		repo := GitHubTrendingRepo{
 			Title:       title,

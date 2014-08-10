@@ -158,6 +158,9 @@ func getRepos(doc *goquery.Document, since string) []GithubRepo {
 		url = "https://github.com" + url
 		stars := s.Find("span.collection-stat").First().Text()
 		stars = strings.Replace(stars, ",", "", -1)
+		if stars == "" {
+			stars = "0"
+		}
 
 		repo := GithubRepo{
 			Title:       title,

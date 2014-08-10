@@ -28,10 +28,12 @@ function help {
 
 function main {
     date_string=`date +"%Y-%m-%d"`
-    filename="${data_dir}/github_trending_repos-${date_string}.json"
-    echo ${filename}
 
-    bq "--credential_file load --source_format=NEWLINE_DELIMITED_JSON github:trending ${filename}"
+    trending_repos="${data_dir}/github_trending_repos-${date_string}.json"
+    /home/gostats/google-cloud-sdk/bin/bq " load --source_format=NEWLINE_DELIMITED_JSON github.trending ${trending_repos}"
+    
+    godoc_packages="${data_dir}/godoc_packages-${date_string}.json"
+    /home/gostats/google-cloud-sdk/bin/bq " load --source_format=NEWLINE_DELIMITED_JSON godoc.packages ${godoc_packages}"
 }
 
 while [ $# -gt 0 ]; do

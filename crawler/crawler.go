@@ -2,11 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 	"time"
 )
@@ -25,19 +27,13 @@ type GoDocPackages struct {
 	Results []GoDocPackage
 }
 
-type GitHubTrendingRepo struct {
+type GithubRepo struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Url         string `json:"url"`
 	Stars       string `json:"stars"`
 	Date        int    `json:"date"`
 	Since       string `json:"since"`
-}
-
-type GitHubTotalStarsRepo struct {
-	Name  string
-	Url   string
-	Stars int
 }
 
 func init() {
@@ -47,7 +43,7 @@ func init() {
 }
 
 func dateFilename(prefix string, extension string) string {
-	dateString := time.Now().Format("2006-01-02-15")
+	dateString := time.Now().Format("2006-01-02")
 	return prefix + "-" + dateString + extension
 }
 
@@ -62,7 +58,7 @@ func createFile(filename string) error {
 	return nil
 }
 
-func scrapeGoDocPackages() {
+func scrapeGoDocPackages(outDir string) {
 	response, err := http.Get("http://api.godoc.org/packages")
 	if err != nil {
 		Error.Println(err)
@@ -79,6 +75,10 @@ func scrapeGoDocPackages() {
 	}
 
 	filename := dateFilename("godoc_packages", ".json")
+	if outDir != "" {
+		filename = path.Join(outDir, filename)
+	}
+
 	err = createFile(filename)
 	if err != nil {
 		Error.Println(err)
@@ -112,11 +112,15 @@ func scrapeGoDocPackages() {
 	}
 }
 
-func scrapeGithubTrendingRepos(language string) {
+func scrapeTrendingRepos(language string, outDir string) {
 	var doc *goquery.Document
 	var err error
 
 	filename := dateFilename("github_trending_repos", ".json")
+	if outDir != "" {
+		filename = path.Join(outDir, filename)
+	}
+
 	err = createFile(filename)
 	if err != nil {
 		Error.Println(err)
@@ -144,8 +148,8 @@ func scrapeGithubTrendingRepos(language string) {
 	}
 }
 
-func getRepos(doc *goquery.Document, since string) []GitHubTrendingRepo {
-	var repos []GitHubTrendingRepo
+func getRepos(doc *goquery.Document, since string) []GithubRepo {
+	var repos []GithubRepo
 
 	doc.Find("li.repo-leaderboard-list-item").Each(func(i int, s *goquery.Selection) {
 		title := s.Find("div h2 a").Text()
@@ -155,7 +159,7 @@ func getRepos(doc *goquery.Document, since string) []GitHubTrendingRepo {
 		stars := s.Find("span.collection-stat").First().Text()
 		stars = strings.Replace(stars, ",", "", -1)
 
-		repo := GitHubTrendingRepo{
+		repo := GithubRepo{
 			Title:       title,
 			Description: description,
 			Url:         url,
@@ -169,7 +173,7 @@ func getRepos(doc *goquery.Document, since string) []GitHubTrendingRepo {
 	return repos
 }
 
-func writeRepos(file *os.File, repos []GitHubTrendingRepo) error {
+func writeRepos(file *os.File, repos []GithubRepo) error {
 	for _, repo := range repos {
 		outData, err := json.Marshal(repo)
 		if err != nil {
@@ -187,11 +191,24 @@ func writeRepos(file *os.File, repos []GitHubTrendingRepo) error {
 }
 
 func main() {
+	out := flag.String("out", "", "the output directory where the data is written to")
+	flag.Parse()
+
+	if *out != "" {
+		if _, err := os.Stat(*out); err != nil {
+			if os.IsNotExist(err) {
+				if err = os.Mkdir(*out, 0755); err != nil {
+					Error.Panicln(err)
+				}
+			}
+		}
+	}
+
 	Info.Println("Getting packages from GoDoc...")
-	scrapeGoDocPackages()
+	scrapeGoDocPackages(*out)
 
 	Info.Println("Getting trending repos from GtiHub...")
-	scrapeGithubTrendingRepos("go")
+	scrapeTrendingRepos("go", *out)
 
 	Info.Println("Done")
 }

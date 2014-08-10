@@ -1,0 +1,12 @@
+---
+# This is the top-level playbook that will set up gostats on all hosts.
+
+- hosts: all
+  user: gostats
+  sudo: True
+  vars_files:
+    - vars/vars.yml
+
+  roles:
+    - crawler
+    - bigquery

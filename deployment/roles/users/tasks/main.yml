@@ -1,0 +1,63 @@
+---
+# Creates a deploy user and your main user.
+# Enables key based login, passwordless sudo for deploy and sets a password for your user.
+
+- name: Create deploy group
+  group: name=deploy state=present
+
+- name: Create user deploy
+  user: name=deploy comment="Ansible deployment user" home=/home/deploy shell=/bin/bash group=deploy
+
+- name: Enable passwordless sudo
+  template: src=sudoers dest=/etc/sudoers validate='visudo -cf %s'
+
+- name: Ensure .ssh directory
+  file: dest=/home/deploy/.ssh state=directory
+
+- name: Copy authorized keys to deploy user
+  command: cp /root/.ssh/authorized_keys /home/deploy/.ssh/
+
+- name: Set permissions on authorized_keys
+  file: path=/home/deploy/.ssh/authorized_keys owner=deploy group=deploy mode=400
+  notify: restart ssh
+
+- name: Set permissions on deploy home directory
+  file: dest=/home/deploy owner=deploy group=deploy recurse=yes state=directory
+
+- name: Create {{ main_user_name }} group
+  group: name={{ main_user_name }} state=present
+
+- name: Create user {{ main_user_name }}
+  user: name={{ main_user_name }} home=/home/{{ main_user_name }} shell=/bin/bash group={{ main_user_name }} groups=sudo,fuse
+
+- name: Ensure .ssh directory
+  file: dest=/home/{{ main_user_name }}/.ssh state=directory
+
+- name: Copy authorized keys to {{ main_user_name }} user
+  command: cp /root/.ssh/authorized_keys /home/{{ main_user_name }}/.ssh/
+
+- name: Set permissions on authorized_keys
+  file: path=/home/{{ main_user_name }}/.ssh/authorized_keys owner={{ main_user_name }} group={{ main_user_name }} mode=400
+  notify: restart ssh
+
+- name: Set ownership on {{ main_user_name }} home directory
+  file: dest=/home/{{ main_user_name }} owner={{ main_user_name }} group={{ main_user_name }} recurse=yes state=directory
+
+- name: Create gostats group
+  group: name=gostats state=present
+
+- name: Create user gostats
+  user: name=gostats home=/home/gostats shell=/bin/bash group=gostats groups=sudo,fuse
+
+- name: Ensure .ssh directory
+  file: dest=/home/gostats/.ssh state=directory
+
+- name: Copy authorized keys to gostats user
+  command: cp /root/.ssh/authorized_keys /home/gostats/.ssh/
+
+- name: Set permissions on authorized_keys
+  file: path=/home/gostats/.ssh/authorized_keys owner=gostats group=gostats mode=400
+  notify: restart ssh
+
+- name: Set ownership on gostats home directory
+  file: dest=/home/gostats owner=gostats group=gostats recurse=yes state=directory

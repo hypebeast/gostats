@@ -1,0 +1,16 @@
+---
+# Installs and starts the Google BigQuery sync script
+
+#- name: Copy crontab file
+#  copy: src=bigquery.cron dest=/etc/cron.d
+
+- name: Ensure sync script directory exists
+  file: dest=/home/gostats/bigquery owner=gostats group=gostats state=directory
+
+- name: Copy the sync script
+  copy: src=../../../../bigquery/sync.sh dest=/home/gostats/bigquery/sync.sh group=gostats owner=gostats mode=0754
+
+- name: Ensure cron job exists
+  cron: name="gostats sync with bigquery" hour=7
+        user="gostats" job="/home/gostats/bigquery/sync.sh -d /home/gostats/crawler/data >> /var/log/gostats/sync.log 2>&1"
+

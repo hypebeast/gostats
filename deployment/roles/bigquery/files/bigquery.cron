@@ -1,0 +1,2 @@
+# run daily synchronization with Google BigQuery
+0 7 * * * /home/gostats/bigquery/sync.sh -d /home/gostats/crawler/data >> /var/log/gostats/sync.log 2>&1

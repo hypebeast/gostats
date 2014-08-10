@@ -1,0 +1,5 @@
+# run crawler daily 
+0 6 * * * /bin/bash -l -c 'cd /home/gostats/crawler && ./crawler -out data >> /var/log/gostats/crawler.log 2>&1'
+
+# keep last 30 days worth of data
+0 0 * * * find /home/gostats/crawler/data/* -mtime +30 -exec rm {} \;

@@ -30,10 +30,14 @@ function main {
     date_string=`date +"%Y-%m-%d"`
 
     trending_repos="${data_dir}/github_trending_repos-${date_string}.json"
-    /home/gostats/google-cloud-sdk/bin/bq " load --source_format=NEWLINE_DELIMITED_JSON github.trending ${trending_repos}"
+    echo "Syncing ${trending_repos}..."
+    /home/gostats/google-cloud-sdk/bin/bq load --source_format=NEWLINE_DELIMITED_JSON github.trending ${trending_repos}
     
     godoc_packages="${data_dir}/godoc_packages-${date_string}.json"
-    /home/gostats/google-cloud-sdk/bin/bq " load --source_format=NEWLINE_DELIMITED_JSON godoc.packages ${godoc_packages}"
+    echo "Syncing ${godoc_packages}..."
+    /home/gostats/google-cloud-sdk/bin/bq load --source_format=NEWLINE_DELIMITED_JSON godoc.packages ${godoc_packages}
+
+    echo "Done"
 }
 
 while [ $# -gt 0 ]; do

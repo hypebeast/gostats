@@ -1,0 +1,4 @@
+[
+  {"name": "count", "type": "integer", "mode": "required"},
+  {"name": "date", "type": "timestamp", "mode": "required"}
+]

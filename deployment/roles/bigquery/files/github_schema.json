@@ -1,0 +1,9 @@
+[
+  {"name": "title", "type": "string", "mode": "required"},
+  {"name": "description", "type": "string", "mode": "required"},
+  {"name": "url", "type": "string", "mode": "required"},
+  {"name": "stars", "type": "integer", "mode": "required"},
+  {"name": "forks", "type": "integer", "mode": "nullable"},
+  {"name": "date", "type": "timestamp", "mode": "required"},
+  {"name": "since", "type": "string", "mode": "nullable"}
+]

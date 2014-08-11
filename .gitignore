@@ -1,3 +1,8 @@
 deployment/vars/vars.yml
 deployment/hosts
 .vagrant/
+web/node_modules/
+web/bower_components/
+web/public/javascript/app.min.js
+web/public/stylesheets/styles.css
+web/public/fonts

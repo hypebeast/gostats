@@ -8,5 +8,4 @@ import (
 
 func Include() {
 	goji.Get("/", controllers.Home)
-	goji.Get("/about", controllers.About)
 }

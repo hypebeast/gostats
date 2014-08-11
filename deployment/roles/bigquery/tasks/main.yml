@@ -10,6 +10,12 @@
 - name: Copy the sync script
   copy: src=../../../../bigquery/sync.sh dest=/home/gostats/bigquery/sync.sh group=gostats owner=gostats mode=0754
 
+- name: Copy schema files
+  copy: src={{ item }} dest=/home/gostats/bigquery group=gostats owner=gostats
+  with_items:
+  - github_schema.json 
+  - godoc_schema.json 
+
 - name: Ensure cron job exists
   cron: name="gostats sync with bigquery" hour=7 minute=0
         user="gostats" job="/home/gostats/bigquery/sync.sh -d /home/gostats/crawler/data >> /var/log/gostats/sync.log 2>&1"

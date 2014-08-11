@@ -32,6 +32,7 @@ type GithubRepo struct {
 	Description string `json:"description"`
 	Url         string `json:"url"`
 	Stars       string `json:"stars"`
+	Forks       string `json:"forks"`
 	Date        int    `json:"date"`
 	Since       string `json:"since"`
 }
@@ -139,7 +140,7 @@ func scrapeTrendingRepos(language string, outDir string) {
 			Error.Println(err)
 		}
 
-		repos := getRepos(doc, period)
+		repos := readTrendingRepos(doc, period)
 		err = writeRepos(f, repos)
 		if err != nil {
 			Error.Println(err)
@@ -148,7 +149,75 @@ func scrapeTrendingRepos(language string, outDir string) {
 	}
 }
 
-func getRepos(doc *goquery.Document, since string) []GithubRepo {
+func scrapeMostStarredRepos(language string, outDir string) {
+	var doc *goquery.Document
+	var err error
+
+	filename := dateFilename("github_most_starred", ".json")
+	if outDir != "" {
+		filename = path.Join(outDir, filename)
+	}
+
+	err = createFile(filename)
+	if err != nil {
+		Error.Println(err)
+		return
+	}
+
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
+	defer f.Close()
+	if err != nil {
+		Error.Println(err)
+		return
+	}
+
+	for i := 1; i <= 5; i++ {
+		if doc, err = goquery.NewDocument(fmt.Sprintf("https://github.com/search?q=stars:>1&type=Repositories&l=%s&p=%d", language, i)); err != nil {
+			Error.Println(err)
+		}
+		repos := readMostStarredRepos(doc)
+		err = writeRepos(f, repos)
+		if err != nil {
+			Error.Println(err)
+			return
+		}
+	}
+}
+
+func readMostStarredRepos(doc *goquery.Document) []GithubRepo {
+	var repos []GithubRepo
+
+	doc.Find("li.public.source").Each(func(i int, s *goquery.Selection) {
+		title := s.Find("h3.repolist-name a").Text()
+		description := strings.Trim(s.Find("div.body p.description").Text(), "\n ")
+		url, _ := s.Find("h3.repolist-name a").Attr("href")
+		url = "https://github.com" + url
+		stars := strings.Trim(s.Find("ul.repo-stats li.stargazers a").Text(), "\n ")
+		stars = strings.Replace(stars, ",", "", -1)
+		if stars == "" {
+			stars = "0"
+		}
+		forks := strings.Trim(s.Find("ul.repo-stats li.forks a").Text(), "\n ")
+		forks = strings.Replace(forks, ",", "", -1)
+		if forks == "" {
+			forks = "0"
+		}
+
+		repo := GithubRepo{
+			Title:       title,
+			Description: description,
+			Url:         url,
+			Stars:       stars,
+			Forks:       forks,
+			Date:        int(time.Now().Unix()),
+		}
+
+		repos = append(repos, repo)
+	})
+	return repos
+}
+
+func readTrendingRepos(doc *goquery.Document, since string) []GithubRepo {
 	var repos []GithubRepo
 
 	doc.Find("li.repo-leaderboard-list-item").Each(func(i int, s *goquery.Selection) {
@@ -210,8 +279,11 @@ func main() {
 	Info.Println("Getting packages from GoDoc...")
 	scrapeGoDocPackages(*out)
 
-	Info.Println("Getting trending repos from GtiHub...")
+	Info.Println("Getting trending repos from GitHub...")
 	scrapeTrendingRepos("go", *out)
+
+	Info.Println("Getting most starred repos from GitHub...")
+	scrapeMostStarredRepos("Go", *out)
 
 	Info.Println("Done")
 }

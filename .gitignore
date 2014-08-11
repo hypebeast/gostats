@@ -6,3 +6,4 @@ web/bower_components/
 web/public/javascript/app.min.js
 web/public/stylesheets/styles.css
 web/public/fonts
+web/public/stylesheets/rickshaw.min.css

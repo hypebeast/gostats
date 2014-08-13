@@ -236,6 +236,7 @@ func readTrendingRepos(doc *goquery.Document, since string) []GithubRepo {
 			Description: description,
 			Url:         url,
 			Stars:       stars,
+			Forks:       "0",
 			Date:        int(time.Now().Unix()),
 			Since:       since,
 		}

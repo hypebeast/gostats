@@ -1,6 +1,13 @@
 package models
 
 type GithubRepo struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Url         string `json:"url"`
+	Stars       int    `json:"stars"`
+	Forks       int    `json:"forks"`
+	Date        int    `json:"date"`
+	Since       string `json:"since"`
 }
 
 var (
@@ -8,7 +15,7 @@ var (
 	mostStarredRepos []GithubRepo
 )
 
-func Update() {
+func UpdateGithubStats() {
 	// TODO: Update trending and most starred repos from BigQuery
 }
 

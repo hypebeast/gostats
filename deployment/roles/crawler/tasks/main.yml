@@ -1,5 +1,5 @@
 ---
-# Deploys the crawler
+# Deploys the crawler application
 
 - name: Ensure build directory exists
   file: dest=/home/gostats/build owner=gostats group=gostats state=directory

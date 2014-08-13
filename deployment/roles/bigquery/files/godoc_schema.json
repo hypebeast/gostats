@@ -1,4 +1,4 @@
 [
-  {"name": "count", "type": "integer", "mode": "required"},
-  {"name": "date", "type": "timestamp", "mode": "required"}
+  {"name": "count", "type": "integer", "mode": "nullable"},
+  {"name": "date", "type": "timestamp", "mode": "nullable"}
 ]

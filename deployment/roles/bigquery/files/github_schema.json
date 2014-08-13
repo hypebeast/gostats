@@ -1,9 +1,9 @@
 [
-  {"name": "title", "type": "string", "mode": "required"},
-  {"name": "description", "type": "string", "mode": "required"},
-  {"name": "url", "type": "string", "mode": "required"},
-  {"name": "stars", "type": "integer", "mode": "required"},
+  {"name": "title", "type": "string", "mode": "nullable"},
+  {"name": "description", "type": "string", "mode": "nullable"},
+  {"name": "url", "type": "string", "mode": "nullable"},
+  {"name": "stars", "type": "integer", "mode": "nullable"},
   {"name": "forks", "type": "integer", "mode": "nullable"},
-  {"name": "date", "type": "timestamp", "mode": "required"},
+  {"name": "date", "type": "timestamp", "mode": "nullable"},
   {"name": "since", "type": "string", "mode": "nullable"}
 ]

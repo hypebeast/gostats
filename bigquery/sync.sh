@@ -36,7 +36,7 @@ function main {
     
     starred_repos="${data_dir}/github_most_starred-${date_string}.json"
     echo "Syncing ${starred_repos}..."
-    /home/gostats/google-cloud-sdk/bin/bq load --source_format=NEWLINE_DELIMITED_JSON godoc.packages ${starred_repos} ${home_dir}github_schema.json
+    /home/gostats/google-cloud-sdk/bin/bq load --source_format=NEWLINE_DELIMITED_JSON github.stars ${starred_repos} ${home_dir}github_schema.json
 
     godoc_packages="${data_dir}/godoc_packages-${date_string}.json"
     echo "Syncing ${godoc_packages}..."

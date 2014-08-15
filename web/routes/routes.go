@@ -8,4 +8,9 @@ import (
 
 func Include() {
 	goji.Get("/", controllers.Home)
+
+	// API
+	goji.Get("/api/godocstats", controllers.GodocStats)
+	goji.Get("/api/github/trending", controllers.GodocStats)
+	goji.Get("/api/github/stars", controllers.GodocStats)
 }

@@ -53,4 +53,4 @@ gulp.task('watch', function() {
   gulp.watch(['public/javascripts/*.js', '!public/app.min.js'], ['compress']);
 });
 
-gulp.task('default', ['clean', 'sass', 'compress', 'fonts', 'css']);
+gulp.task('default', ['clean', 'sass', 'compress', 'fonts', 'css', 'watch']);

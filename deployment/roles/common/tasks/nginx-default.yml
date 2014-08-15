@@ -1,0 +1,27 @@
+---
+# Create a defualt web landing page
+
+- name: remove default nginx site
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: write nginx.conf
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+
+- name: ensure log directory
+  file: dest=/var/log/nginx state=directory
+
+- name: create default website directory
+  file: dest=/srv/{{ domain }}/public state=directory
+
+- name: write index file for default website
+  template: src=index.html dest=/srv/{{ domain }}/public/index.html
+
+- name: set permissions for nginx on default website public directory
+  shell: chown -R www-data /srv/{{ domain }}/public
+
+- name: create nginx default site config
+  template: src=nginx_default.conf dest=/etc/nginx/sites-available/000.{{ domain }}.conf
+
+- name: enable the default site
+  file: src=/etc/nginx/sites-available/000.{{ domain }}.conf dest=/etc/nginx/sites-enabled/000.{{ domain }}.conf state=link
+  notify: restart nginx

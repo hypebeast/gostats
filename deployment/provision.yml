@@ -1,16 +1,9 @@
 ---
-# This playbook just needs to be run once. It configures users for your new server
-# as root.
-# After that it will run the main software installation playbook as the 'deploy' user
 
 - hosts: all
   user: root
   gather_facts: False
   vars_files:
     - vars/vars.yml
-
   roles:
-    - users
     - common
-
-#- include: deploy.yml

@@ -37,7 +37,28 @@
   - python-pycurl
   - golang
 
+- name: Add nginx
+  apt_repository: repo={{ item }} state=present
+  with_items:
+    - ppa:nginx/stable
+
 - name: Update APT package cache
   apt: update_cache=yes
 
-#- include: swap.yml tags=swap
+- name: Install main packages for python and nginx
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - libfreetype6
+    - libfreetype6-dev
+    - libjpeg62
+    - libjpeg62-dev
+    - libpq-dev
+    - libxml2-dev
+    - nginx
+    - python-dev
+    - python-imaging
+    - python-setuptools
+    - zlib1g-dev
+
+- include: nginx-default.yml tags=nginx-default
+

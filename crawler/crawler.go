@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	"log"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 var (
@@ -98,7 +99,7 @@ func scrapeGoDocPackages(outDir string) {
 		Date  int `json:"date"`
 	}{
 		Count: len(packages.Results),
-		Date:  int(time.Now().Unix()),
+		Date:  int(time.Now().UTC().Unix()),
 	}
 	outData, err := json.Marshal(data)
 	if err != nil {
@@ -209,7 +210,7 @@ func readMostStarredRepos(doc *goquery.Document) []GithubRepo {
 			Url:         url,
 			Stars:       stars,
 			Forks:       forks,
-			Date:        int(time.Now().Unix()),
+			Date:        int(time.Now().UTC().Unix()),
 		}
 
 		repos = append(repos, repo)
@@ -237,7 +238,7 @@ func readTrendingRepos(doc *goquery.Document, since string) []GithubRepo {
 			Url:         url,
 			Stars:       stars,
 			Forks:       "0",
-			Date:        int(time.Now().Unix()),
+			Date:        int(time.Now().UTC().Unix()),
 			Since:       since,
 		}
 

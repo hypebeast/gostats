@@ -3,8 +3,9 @@ deployment/hosts
 .vagrant/
 web/node_modules/
 web/bower_components/
-web/public/javascript/app.min.js
 web/public/stylesheets/styles.css
 web/public/fonts
+web/public/javascript/*.js
 web/public/stylesheets/rickshaw.min.css
 deployment/host*
+build/

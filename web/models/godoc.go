@@ -17,7 +17,7 @@ var godocQuery = "SELECT count, date FROM godoc.packages WHERE date > '%d' ORDER
 
 func UpdateGodocStats() {
 	now := time.Now()
-	date := time.Date(now.Year(), now.Month(), now.Day(), 10, 0, 0, 0, time.UTC).Add(time.Hour * 24 * 365 * -1).Unix()
+	date := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC).Add(time.Hour * 24 * 365 * -1).Unix()
 	query := fmt.Sprintf(godocQuery, date)
 	data, _ := runQuery(query)
 

@@ -1,28 +1,146 @@
 {{define "body"}}
 <div class="row">
     <div class="col-md-12">
-        <h1>Go Packages</h1>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div id="chart-container">
-            <div id="y-axis"></div>
-            <div id="chart"></div>
+        <div class="block">
+            <div class="header">
+                <h2>GoDoc</h2>
+            </div>
+            <div class="content">
+                <div id="chart-container">
+                    <div id="y-axis"></div>
+                    <div id="chart"></div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="stat-data stat-data-3">
+                    <div class="stat-container stat-purple">
+                        <h2 id="totalPackages"></h2>
+                        <span>Total Packages</span>
+                    </div>
+                </div>
+                <div class="stat-data stat-data-3">
+                    <div class="stat-container stat-purple">
+                        <h2 id="newPackagesLastDay"></h2>
+                        <span>New Packages (Last Day)</span>
+                    </div>
+                </div>
+                <div class="stat-data stat-data-3">
+                    <div class="stat-container stat-purple">
+                        <h2 id="newPackagesLastWeek"></h2>
+                        <span>New Packages (Last Week)</span>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
         </div>
     </div>
 </div>
+
 <div class="row">
-    <div class="col-md-6">
-        <h2>Trending Repos</h2>
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="active">Daily<`0`></li>
-            <li class="">Weekly></li>
-            <li class="">Monthly<`0`></li>
-        </ul>
-    </div>
-    <div class="col-md-6">
-        <h2>Most Starred Repos</h2>
+    <div class="col-md-12">
+        <div class="block">
+            <div class="header">
+                <h2>Github</h2>
+            </div>
+
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="block">
+                            <div class="header">
+                                <h3>Trending Repos</h3>
+                            </div>
+                            <div class="content">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="active"><a href="#daily" role="tab" data-toggle="tab">Daily</a></li>
+                                    <li><a href="#weekly" role="tab" data-toggle="tab">Weekly</a></li>
+                                    <li><a href="#monthly" role="tab" data-toggle="tab">Monthly</a></li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="daily">
+                                        <ul class="repo-list">
+                                            {{ range $repo := .DailyTrendingRepos }}
+                                                <li class="repo-item">
+                                                    <h2 class="repo-title">
+                                                        <a href="{{$repo.Url}}" class="repo-name">{{$repo.Title}}</a>
+                                                        <span class="repo-meta">
+                                                            <i class="fa fa-star"></i>
+                                                            {{$repo.Stars}}
+                                                        </span>
+                                                    </h2>
+                                                    <p class="repo-description">{{$repo.Description}}</p>
+                                                </li>
+                                            {{ end }}
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="tab-pane active" id="weekly">
+                                        <ul class="repo-list">
+                                            {{ range $repo := .WeeklyTrendingRepos }}
+                                                <li class="repo-item">
+                                                    <h2 class="repo-title">
+                                                        <a href="{{$repo.Url}}" class="repo-name">{{$repo.Title}}</a>
+                                                        <span class="repo-meta">
+                                                            <i class="fa fa-star"></i>
+                                                            {{$repo.Stars}}
+                                                        </span>
+                                                    </h2>
+                                                    <p class="repo-description">{{$repo.Description}}</p>
+                                                </li>
+                                            {{ end }}
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="tab-pane active" id="monthly">
+                                        <ul class="repo-list">
+                                            {{ range $repo := .MonthlyTrendingRepos }}
+                                                <li class="repo-item">
+                                                    <h2 class="repo-title">
+                                                        <a href="{{$repo.Url}}" class="repo-name">{{$repo.Title}}</a>
+                                                        <span class="repo-meta">
+                                                            <i class="fa fa-star"></i>
+                                                            {{$repo.Stars}}
+                                                        </span>
+                                                    </h2>
+                                                    <p class="repo-description">{{$repo.Description}}</p>
+                                                </li>
+                                            {{ end }}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="block">
+                            <div class="header">
+                                <h3>Most Starred</h3>
+                            </div>
+
+                            <div class="content">
+                                <ul class="repo-list">
+                                    {{ range $repo := .MostStarredRepos }}
+                                        <li class="repo-item">
+                                            <h2 class="repo-title">
+                                                <a href="{{$repo.Url}}" class="repo-name">{{$repo.Title}}</a>
+                                                <span class="repo-meta">
+                                                    <i class="fa fa-star"></i>
+                                                    {{$repo.Stars}}
+                                                </span>
+                                            </h2>
+                                            <p class="repo-description">{{$repo.Description}}</p>
+                                        </li>
+                                    {{ end }}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 {{end}}

@@ -4,15 +4,27 @@ var csso = require('gulp-csso');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var plumber = require('gulp-plumber');
-var del = require('del');
+var coffee = require('gulp-coffee');
+var gutil = require('gulp-util');
+var clean = require('gulp-clean');
 
 var paths = {
-  fonts: 'bower_components/font-awesome/fonts/*',
-  rickshaw: 'bower_components/rickshaw/rickshaw.min.css'
+  fonts: 'bower_components/font-awesome/fonts/*'
 };
 
+var cssFiles = [
+    'bower_components/rickshaw/rickshaw.min.css'
+];
+
+var filesToClean = [
+    'public/javascript/*.js',
+    'public/stylesheets/*.css',
+    'public/fonts'
+];
+
 gulp.task('clean', function(cb) {
-  del(['public/javascript/app.min.js', 'fonts', 'public/stylesheets/*.css'], cb);
+    gulp.src(filesToClean, {read: false})
+        .pipe(clean());
 });
 
 gulp.task('sass', function() {
@@ -30,27 +42,36 @@ gulp.task('compress', function() {
     'bower_components/rickshaw/vendor/d3.min.js',
     'bower_components/rickshaw/vendor/d3.layout.min.js',
     'bower_components/rickshaw/rickshaw.js',
-    'public/javascript/*.js'
+    'bower_components/lodash/dist/lodash.min.js',
+    'public/javascript/*.js',
+    '!public/javascript/app.min.js'
   ])
     .pipe(concat('app.min.js'))
     .pipe(gulp.dest('public/javascript'));
 });
 
+gulp.task('coffee', function() {
+  gulp.src('./public/javascript/*.coffee')
+    .pipe(coffee({bare: true}).on('error', gutil.log))
+    .pipe(gulp.dest('./public/javascript'));
+});
+
 // Copy all fonts to the public folder
 gulp.task('fonts', function() {
-  return gulp.src(paths.fonts)
+  gulp.src(paths.fonts)
     .pipe(gulp.dest('public/fonts'));
 });
 
 // Copy all additional required CSS files to the public folder
 gulp.task('css', function() {
-  return gulp.src(paths.rickshaw)
+  gulp.src(cssFiles)
     .pipe(gulp.dest('public/stylesheets'));
 });
 
 gulp.task('watch', function() {
   gulp.watch('public/stylesheets/*.scss', ['sass']);
-  gulp.watch(['public/javascripts/*.js', '!public/app.min.js'], ['compress']);
+  gulp.watch(['public/javascript/*.coffee'], ['coffee', 'compress']);
 });
 
-gulp.task('default', ['clean', 'sass', 'compress', 'fonts', 'css', 'watch']);
+gulp.task('default', ['sass', 'coffee', 'compress', 'fonts', 'css', 'watch']);
+

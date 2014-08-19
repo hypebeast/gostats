@@ -8,7 +8,11 @@ import (
 var database Database
 
 type Database struct {
-	GodocRepos []Godoc
+	GodocRepos      []Godoc
+	DailyTrending   []GithubRepo
+	WeeklyTrending  []GithubRepo
+	MonthlyTrending []GithubRepo
+	MostStarred     []GithubRepo
 }
 
 // runQuery executes bq with the given query and returns the result.

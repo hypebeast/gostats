@@ -3,11 +3,35 @@
 @import "rickshaw.min.css";
 
 ////
+// Variables
+////
+
+$primary-color: #00acac;
+
+$bg-main-color: #e6e6e6;
+$bg-color-block: #fff;
+$bg-color-header: #fbfbfb;
+$bg-orange: #d35400;
+$bg-purple: #727CB6;
+
+$font-stack: "Railway", Helvetica, sans-serif;
+
+////
 // Main styles
 ////
 
 body {
   padding-top: 60px;
+  background: $bg-main-color;
+  font-family: $font-stack;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+}
+
+.clear {
+    clear: both;
 }
 
 ////
@@ -22,6 +46,8 @@ body {
 #chart {
     position: relative;
     left: 40px;
+    margin-top: 15px;
+    margin-bottom: 20px;
 }
 
 #y-axis {
@@ -31,3 +57,114 @@ body {
     width: 40px;
 }
 
+////
+// Repository list
+////
+
+ul {
+    &.repo-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        &.repo-item {
+            margin-top: 20px;
+        }
+    }
+}
+
+.repo-title {
+    font-size: 130%;
+}
+
+.repo-meta {
+    float: right;
+}
+
+.repo-name {
+}
+
+.repo-description {
+}
+
+////
+// Blocks
+///
+
+.block {
+    margin-bottom: 30px;
+    background: $bg-color-block;
+    border-radius: 3px;
+    border-left: 1px solid #efefef;
+    border-right: 1px solid #efefef;
+    border-bottom: 1px solid #e2e2e2;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.14);
+
+    .header {
+        padding: 10px;
+        border-radius: 3px 3px 0 0;
+        background: $bg-color-header;
+
+        h2 {
+             margin: 0;
+             font-weight: 100;
+             font-size: 29px;
+             line-height: 38px;
+        }
+
+        h3 {
+            margin: 0;
+            font-weight: 100;
+            font-size: 24px;
+            line-height: 38px;
+        }
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .no-border {
+        border-bottom: 0;
+    }
+}
+
+////
+// Stat Panel
+////
+
+.stat-data {
+    padding: 10px;
+    float: left;
+    
+    &.stat-data-2 {
+        width: 50%;
+    }
+    
+    &.stat-data-3 {
+        width: 33%;
+    }
+
+    .stat-container {
+        padding: 20px 10px;
+        background: #fff;
+        border-radius: 3px;
+        text-align: center;
+        color: #FFF;
+        font-weight: 200;
+
+        h2 {
+            margin: 0 0 5px 0;
+        }
+
+        span {
+            font-size: 18px;
+        }
+    }
+
+    .stat-purple {
+        background: $bg-purple;
+    }
+}

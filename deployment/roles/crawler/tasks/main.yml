@@ -1,41 +1,17 @@
 ---
 # Deploys the crawler application
 
-- name: Ensure build directory exists
-  file: dest=/home/gostats/build owner=gostats group=gostats state=directory
-
-- name: Ensure required GOPATH directories exist
-  file: dest={{ item.dest }} owner=gostats group=gostats state=directory
-  with_items:
-  - { dest: '/home/gostats/build/src/github.com/hypebeast' }
-  - { dest: '/home/gostats/build/pkg' }
-  - { dest: '/home/gostats/build/bin' }
-
-- name: Synchronize crawler files
-  synchronize: src=../../../../../gostats dest=/home/gostats/build/src/github.com/hypebeast group=no owner=no rsync_opts=--exclude=.git,--exclude=deployment,--exclude=web
-
-- name: Install all dependencies
-  command: go get github.com/PuerkitoBio/goquery
-  args:
-    chdir: /home/gostats/build
-  environment:
-    GOPATH: /home/gostats/build
-
-- name: Build crawler
-  command: go build crawler.go
-  args:
-    chdir: /home/gostats/build/src/github.com/hypebeast/gostats/crawler
-  environment:
-    GOPATH: /home/gostats/build
-
 - name: Ensure crawler directory exists
   file: dest=/home/gostats/crawler owner=gostats group=gostats state=directory
 
-- name: Copy crawler executable
-  command: cp /home/gostats/build/src/github.com/hypebeast/gostats/crawler/crawler /home/gostats/crawler
+- name: Copy package to sever and unpack it
+  unarchive: src=../../../../build/tgz/crawler.tar.gz dest=/home/gostats
 
-- name: Remove build directory
-  file: dest=/home/gostats/build state=absent
+- name: Cleaning up
+  file: dest=/tmp/crawler.tar.gz state=absent
+
+- name: Set permissions
+  file: path=/home/gostats/crawler/crawler group=gostats owner=gostats mode=0754
 
 - name: Ensure cron job exists
   cron: name="gostats crawler" hour=6 minute=0

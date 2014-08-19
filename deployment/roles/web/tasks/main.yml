@@ -1,0 +1,20 @@
+---
+# Deploys the web application
+
+- name: Ensure the web server directory exists
+  file: dest=/home/gostats/webserver owner=gostats group=gostats state=directory
+
+- name: Copy package to sever and unpack it
+  unarchive: src=../../../../build/tgz/webserver.tar.gz dest=/home/gostats
+
+- name: Ensure correct permissions
+  shell: chown gostats:gostats /home/gostats/webserver -R
+
+- name: Ensure binary is executable
+  shell: chmod 0755 /home/gostats/webserver/webserver
+
+- name: Ensure Supervisor script
+  copy: src=gostatsweb.conf dest=/etc/supervisor/conf.d
+
+- name: Start web server
+  command: supervisorctl restart gostatsweb

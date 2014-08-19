@@ -59,6 +59,7 @@
     - python-imaging
     - python-setuptools
     - zlib1g-dev
+    - supervisor
 
 - include: nginx-default.yml tags=nginx-default
 

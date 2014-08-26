@@ -23,6 +23,6 @@
   - godoc_schema.json 
 
 - name: Ensure cron job exists
-  cron: name="gostats sync with bigquery" hour=7 minute=0
+  cron: name="gostats sync with bigquery" hour=0 minute=10
         user="gostats" job="/home/gostats/bigquery/sync.sh -d /home/gostats/crawler/data >> /var/log/gostats/sync.log 2>&1"
 

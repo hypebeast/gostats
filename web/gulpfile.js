@@ -43,6 +43,8 @@ gulp.task('compress', function() {
     'bower_components/rickshaw/vendor/d3.layout.min.js',
     'bower_components/rickshaw/rickshaw.js',
     'bower_components/lodash/dist/lodash.min.js',
+    'bower_components/moment/min/moment.min.js',
+    'bower_components/highcharts-release/highcharts.js',
     'public/javascript/*.js',
     '!public/javascript/app.min.js'
   ])

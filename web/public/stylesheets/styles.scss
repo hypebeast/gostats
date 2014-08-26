@@ -21,7 +21,6 @@ $font-stack: "Railway", Helvetica, sans-serif;
 ////
 
 body {
-  padding-top: 60px;
   background: $bg-main-color;
   font-family: $font-stack;
 }
@@ -38,19 +37,19 @@ h1, h2, h3, h4, h5, h6 {
 // Chart
 ////
 
-#chart-container {
+.chart-container {
     position: relative;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#chart {
+.chart {
     position: relative;
     left: 40px;
     margin-top: 15px;
     margin-bottom: 20px;
 }
 
-#y-axis {
+.y-axis {
     position: absolute;
     top: 0;
     bottom: 0;

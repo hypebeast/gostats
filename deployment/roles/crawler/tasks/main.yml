@@ -14,9 +14,9 @@
   file: path=/home/gostats/crawler/crawler group=gostats owner=gostats mode=0754
 
 - name: Ensure cron job exists
-  cron: name="gostats crawler" hour=6 minute=0
+  cron: name="gostats crawler" hour=0 minute=0
         user="gostats" job="cd /home/gostats/crawler && ./crawler -out data >> /var/log/gostats/crawler.log 2>&1"
 
 - name: Ensure cron job for cleaning up the data directory
-  cron: name=:"gostats clean data directory" hour=0 minute=0
+  cron: name=:"gostats clean data directory" hour=0 minute=15
         user="gostats" job="find /home/gostats/crawler/data/* -mtime +30 -exec rm {} \;"

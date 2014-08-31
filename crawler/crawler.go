@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 	"time"
 
@@ -188,17 +189,21 @@ func scrapeMostStarredRepos(language string, outDir string) {
 func readMostStarredRepos(doc *goquery.Document) []GithubRepo {
 	var repos []GithubRepo
 
-	doc.Find("li.public.source").Each(func(i int, s *goquery.Selection) {
-		title := s.Find("h3.repolist-name a").Text()
-		description := strings.Trim(s.Find("div.body p.description").Text(), "\n ")
-		url, _ := s.Find("h3.repolist-name a").Attr("href")
+	doc.Find("li.repo-list-item").Each(func(i int, s *goquery.Selection) {
+		title := strings.Trim(s.Find("h3.repo-list-name a").Text(), "\n ")
+		description := strings.Trim(s.Find("p.repo-list-description").Text(), "\n ")
+		url, _ := s.Find("h3.repo-list-name a").Attr("href")
 		url = "https://github.com" + url
-		stars := strings.Trim(s.Find("ul.repo-stats li.stargazers a").Text(), "\n ")
+		stars := strings.Trim(s.Find("a.repo-list-stat-item[aria-label=\"Stargazers\"]").Text(), "\n\t ")
+		stars = strings.Replace(stars, " ", "", -1)
+		stars = strings.Replace(stars, "\n", "", -1)
 		stars = strings.Replace(stars, ",", "", -1)
 		if stars == "" {
 			stars = "0"
 		}
-		forks := strings.Trim(s.Find("ul.repo-stats li.forks a").Text(), "\n ")
+		forks := strings.Trim(s.Find("a.repo-list-stat-item[aria-label=\"Forks\"]").Text(), "\n ")
+		forks = strings.Replace(forks, " ", "", -1)
+		forks = strings.Replace(forks, "\n", "", -1)
 		forks = strings.Replace(forks, ",", "", -1)
 		if forks == "" {
 			forks = "0"
@@ -220,14 +225,17 @@ func readMostStarredRepos(doc *goquery.Document) []GithubRepo {
 
 func readTrendingRepos(doc *goquery.Document, since string) []GithubRepo {
 	var repos []GithubRepo
+	var regStars = regexp.MustCompile("[0-9]+")
 
-	doc.Find("li.repo-leaderboard-list-item").Each(func(i int, s *goquery.Selection) {
-		title := s.Find("div h2 a").Text()
-		description := s.Find(".repo-leaderboard-description").Text()
-		url, _ := s.Find("div h2 a").Attr("href")
+	doc.Find("li.repo-list-item").Each(func(i int, s *goquery.Selection) {
+		title := strings.Trim(s.Find("h3.repo-list-name a").Text(), "\n\t ")
+		title = strings.Replace(title, " ", "", -1)
+		title = strings.Replace(title, "\n", "", -1)
+		description := strings.Trim(s.Find("p.repo-list-description").Text(), "\n\t ")
+		url, _ := s.Find("h3.repo-list-name a").Attr("href")
 		url = "https://github.com" + url
-		stars := s.Find("span.collection-stat").First().Text()
-		stars = strings.Replace(stars, ",", "", -1)
+		stars := s.Find("p.repo-list-meta").Text()
+		stars = regStars.FindString(stars)
 		if stars == "" {
 			stars = "0"
 		}

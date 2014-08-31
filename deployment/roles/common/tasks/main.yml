@@ -62,4 +62,5 @@
     - supervisor
 
 - include: nginx-default.yml tags=nginx-default
+- include: supervisor.yml tags=supervisor
 

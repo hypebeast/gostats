@@ -2,6 +2,7 @@ package models
 
 import (
 	"bytes"
+	"fmt"
 	"os/exec"
 )
 
@@ -13,12 +14,14 @@ type Database struct {
 	WeeklyTrending  []GithubRepo
 	MonthlyTrending []GithubRepo
 	MostStarred     []GithubRepo
+	StarsSeries     []RepoStarsSerie
 }
 
-// runQuery executes bq with the given query and returns the result.
+// runQuery runs the query against BigQuery and returns the result.
 func runQuery(query string) (buf *bytes.Buffer, err error) {
 	out, err := exec.Command("bq", "-q", "--format=prettyjson", "query", query).Output()
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	return bytes.NewBuffer(out), nil

@@ -1,9 +1,10 @@
 package main
 
 import (
+	"time"
+
 	"github.com/hypebeast/gojistatic"
 	"github.com/zenazn/goji"
-	"time"
 
 	"github.com/hypebeast/gostats/web/models"
 	"github.com/hypebeast/gostats/web/routes"

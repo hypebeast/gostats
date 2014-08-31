@@ -1,0 +1,13 @@
+---
+# Configure supervisor
+
+- name: write supervisord.conf
+  copy: src=supervisord.conf dest=/etc/supervisor/supervisord.conf
+
+- name: ensure log directory
+  file: dest=/var/log/supervisor state=directory
+
+- name: create and enable config for gostats web application
+  copy: src=gostatsweb.conf dest=/etc/supervisor/conf.d
+  notify: restart supervisor
+

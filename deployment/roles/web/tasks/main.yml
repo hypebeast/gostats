@@ -13,8 +13,6 @@
 - name: Ensure binary is executable
   shell: chmod 0755 /home/gostats/webserver/webserver
 
-- name: Ensure Supervisor script
-  copy: src=gostatsweb.conf dest=/etc/supervisor/conf.d
+- name: Restart web application
+  supervisorctl: name=gostatsweb state=restarted
 
-- name: Start web server
-  command: supervisorctl restart gostatsweb

@@ -63,6 +63,7 @@ rm webserver_*
 
 cp -r public $TGZDIR_SERVER
 cp -r views $TGZDIR_SERVER
+cp start.sh $TGZDIR_SERVER
 popd
 
 pushd $TGZDIR_SERVER

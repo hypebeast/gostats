@@ -20,7 +20,10 @@ func UpdateGodocStats() {
 	// Get data for one year
 	date := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC).Add(time.Hour * 24 * 365 * -1).Unix()
 	query := fmt.Sprintf(godocQuery, date)
-	data, _ := runQuery(query)
+	data, err := runQuery(query)
+	if err != nil {
+		return
+	}
 
 	jsonData := []struct {
 		Count string `json:"count"`

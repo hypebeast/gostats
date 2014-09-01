@@ -1,5 +1,6 @@
-# !!Work in Progress!!
-**More coming soon!**
+# Gostats
+
+[Gostats ](http://gostats.io) provides daily statistics about the Go programming language from various sources, like Godoc and Github.
 
 ## License
 

@@ -49,7 +49,7 @@ gulp.task('compress', function() {
     '!public/javascript/app.min.js'
   ])
     .pipe(concat('app.min.js'))
-    .pipe(uglify())
+//    .pipe(uglify())
     .pipe(gulp.dest('public/javascript'));
 });
 

@@ -11,6 +11,5 @@ func Include() {
 
 	// API
 	goji.Get("/api/godocstats", controllers.GodocStats)
-	goji.Get("/api/github/trending", controllers.GodocStats)
-	goji.Get("/api/github/stars", controllers.GodocStats)
+	goji.Get("/api/github/stars", controllers.GithubRepoStarsHistory)
 }

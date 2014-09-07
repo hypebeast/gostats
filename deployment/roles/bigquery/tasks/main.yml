@@ -10,9 +10,6 @@
 - name: Copy package to sever and unpack it
   unarchive: src=../../../../build/tgz/bigquery.tar.gz dest=/home/gostats
 
-- name: Cleaning up
-  file: dest=/tmp/crawler.tar.gz state=absent
-
 - name: Set permissions
   file: path=/home/gostats/bigquery/sync.sh group=gostats owner=gostats mode=0754
 

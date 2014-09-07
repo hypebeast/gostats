@@ -34,6 +34,31 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ////
+// Header
+////
+
+.header {
+    margin-top: 20px;
+
+    h1 {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 300%;
+        font-weight: 500;
+    }
+
+    .subhead {
+        margin-top: 15px;
+        font-size: 150%;
+        font-weight: 200;
+    }
+
+    .social {
+        margin-top: 15px;
+    }
+}
+
+////
 // Chart
 ////
 

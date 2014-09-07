@@ -37,6 +37,6 @@ func RenderJSON(w http.ResponseWriter, status int, v interface{}) {
 }
 
 func BaseTemplates() []string {
-	templates := []string{"views/base/foot.html", "views/base/head.html", "views/base/navbar.html", "views/base.html"}
+	templates := []string{"views/base/foot.html", "views/base/head.html", "views/base/header.html", "views/statsModal.html", "views/base.html"}
 	return templates
 }

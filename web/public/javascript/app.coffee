@@ -7,8 +7,8 @@ $ ->
         $.getJSON '/api/godocstats', (data) ->
             cb(data)
 
-    getGithubMetrics = (cb) ->
-        $.getJSON '/api/godocstats', (data) ->
+    getGithubRepoStarsHistory = (name, cb) ->
+        $.getJSON '/api/github/stars?name=' + name, (data) ->
             cb(data)
 
     createGodocSeries = (data) ->
@@ -35,6 +35,10 @@ $ ->
                 dateFirstModay = getShortDate(data[i].date)
 
         return {series: series.reverse(), startDate: dateFirstModay}
+
+    createTotalStarsSeries = (data) ->
+        _.map data, (d) ->
+            [getShortDate(d.date), d.stars]
 
     createChartGodocTotal = (data) ->
         godocTotalPackages = createGodocSeries(data)
@@ -140,4 +144,52 @@ $ ->
         createChartGodocWeekly data
 
         godocSummaryStats data
+
+    createRepoCharts = (repoName) ->
+        console.log repoName
+
+    $('.button-stats-modal').click () ->
+        repoName = $(this).attr('data-title')
+
+        getGithubRepoStarsHistory repoName, (data) ->
+            console.log data
+
+            if data? or data.data.len() < 1
+                $('#chart-total-stars').text 'No data available'
+            else
+                seriesData = createTotalStarsSeries(data.data).reverse()
+                console.log seriesData
+                minVal = seriesData[0][1]
+                console.log minVal
+                series = []
+                series.push
+                    data: seriesData
+                    type: 'area'
+                    name: 'Stars'
+
+                $('#chart-total-stars').highcharts
+                    title:
+                        text: 'Total Stars'
+                    xAxis:
+                        type: 'datetime'
+                    yAxis:
+                        title:
+                            text: 'Count'
+                        min: minVal
+                        labels:
+                            formatter: -> return this.value / 1000 + 'k'
+                    plotOptions:
+                        series:
+                            lineColor: 'rgba(211, 84, 0, 1.0)'
+                            fillColor: 'rgba(211, 84, 0, 0.5)'
+                            marker:
+                                fillColor: 'rgba(211, 84, 0, 1.0)'
+                    legend:
+                        enabled: false
+                    reflow: true
+                    series: series
+
+            # Set title for modal and show it
+            $('#modalTitle').text(repoName)
+            $('#statsModal').modal 'show'
 

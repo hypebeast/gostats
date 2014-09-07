@@ -1,11 +1,24 @@
 {{define "head"}}
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>{{.Title}}</title>
+<meta name="description" content="GoStats provides daily statistics about the Go programming language from various sources, like Godoc and Github.">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="keywords" content="go, golang, github, godoc, statistics">
 
 <!--[if lt IE 9]>
 <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
+
+<!-- Twitter -->
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<!-- End Twitter Code -->
+
+<!-- Google Plus -->
+<script src="https://apis.google.com/js/platform.js" async defer>
+  {lang: 'en'}
+</script>
+<!-- End Google Plus Code -->
+
 
 <link rel="stylesheet" href="/stylesheets/styles.css">
 {{end}}

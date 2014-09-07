@@ -24,11 +24,13 @@ type GithubRepo struct {
 }
 
 type RepoStarsSerie struct {
-	Name string
-	Data []struct {
-		Stars int
-		Date  int64
-	}
+	Name string       `json:"name"`
+	Data []StarsPoint `json:"data"`
+}
+
+type StarsPoint struct {
+	Stars int   `json:"stars"`
+	Date  int64 `json:"date"`
 }
 
 var trendingQuery = "SELECT title, description, url, stars, date FROM github.trending WHERE since='%s' AND date > '%d' ORDER BY stars DESC"
@@ -71,13 +73,14 @@ func fetchStarsHistory() {
 			Name: repo.Title,
 		}
 
+		// Map the data
 		for _, x := range jsonData {
 			stars, _ := strconv.Atoi(x.Stars)
 			timestamp, _ := time.Parse("2006-01-02 15:04:05", x.Date)
-			point := struct {
-				Stars int
-				Date  int64
-			}{Stars: stars, Date: timestamp.Unix()}
+			point := StarsPoint{
+				Stars: stars,
+				Date:  timestamp.Unix(),
+			}
 			serie.Data = append(serie.Data, point)
 		}
 

@@ -135,6 +135,11 @@
                                                 </span>
                                             </h2>
                                             <p class="repo-description">{{$repo.Description}}</p>
+                                            <div class="repo-stats">
+                                                <button class="btn btn-primary button-stats-modal" data-title="{{$repo.Title}}">
+                                                Statistics
+                                                </button>
+                                            </div>
                                         </li>
                                     {{ end }}
                                 </ul>
@@ -143,8 +148,8 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+{{template "statsModal" .}}
 {{end}}

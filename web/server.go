@@ -18,7 +18,9 @@ func main() {
 	routes.Include()
 
 	trigger := make(chan bool)
+	startTrending := make(chan bool)
 	tickerChan := time.NewTicker(time.Minute * 10).C
+	tickerTrending := time.NewTicker(time.Minute * 10).C
 
 	// Update data from BigQuery
 	go func() {
@@ -32,7 +34,20 @@ func main() {
 		}
 	}()
 
+	// Update Github trending repos
+	go func() {
+		for {
+			select {
+			case <-startTrending:
+				models.UpdateGithubTrendingRepos()
+			case <-tickerTrending:
+				models.UpdateGithubTrendingRepos()
+			}
+		}
+	}()
+
 	trigger <- true
+	startTrending <- true
 
 	// Run Goji
 	goji.Serve()

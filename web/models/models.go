@@ -2,7 +2,7 @@ package models
 
 import (
 	"bytes"
-	"fmt"
+	"log"
 	"os/exec"
 )
 
@@ -21,7 +21,7 @@ type Database struct {
 func runQuery(query string) (buf *bytes.Buffer, err error) {
 	out, err := exec.Command("bq", "-q", "--format=prettyjson", "query", query).Output()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
 	return bytes.NewBuffer(out), nil

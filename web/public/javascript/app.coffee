@@ -40,6 +40,12 @@ $ ->
         _.map data, (d) ->
             [getShortDate(d.date), d.stars]
 
+    createStarsDailySeries = (data) ->
+        _.map data, (d, key) ->
+            if key < data.length-1
+                count = data[key + 1].stars - d.stars
+                [getShortDate(d.date), count]
+
     createChartGodocTotal = (data) ->
         godocTotalPackages = createGodocSeries(data)
         seriesTotalPackages = []
@@ -152,15 +158,9 @@ $ ->
         repoName = $(this).attr('data-title')
 
         getGithubRepoStarsHistory repoName, (data) ->
-            console.log data
-
-            if data? or data.data.len() < 1
-                $('#chart-total-stars').text 'No data available'
-            else
+            if data? and data.data? and data.data.length > 0
                 seriesData = createTotalStarsSeries(data.data).reverse()
-                console.log seriesData
                 minVal = seriesData[0][1]
-                console.log minVal
                 series = []
                 series.push
                     data: seriesData
@@ -189,7 +189,37 @@ $ ->
                     reflow: true
                     series: series
 
+                # Calculate the number of new packages on a per day basis
+                dailySeriesData = createStarsDailySeries(data.data.reverse())
+                series = []
+                series.push
+                    data: dailySeriesData
+                    type: 'column'
+                    name: 'Count'
+
+                $('#chart-daily-stars').highcharts
+                    title:
+                        text: 'Daily New Stars'
+                    xAxis:
+                        type: 'datetime'
+                    yAxis:
+                        title:
+                            text: 'Count'
+                    legend:
+                        enabled: false
+                    series: series
+            else
+                $('#chart-total-stars').text 'No data available'
+
             # Set title for modal and show it
             $('#modalTitle').text(repoName)
             $('#statsModal').modal 'show'
+
+            reflowCharts = () ->
+                $('#chart-total-stars').highcharts().reflow()
+                $('#chart-daily-stars').highcharts().reflow()
+
+            setTimeout ( ->
+                reflowCharts()
+            ), 200
 
